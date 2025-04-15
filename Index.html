@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFMasterPro - 50+ Free Online PDF Tools | Convert, Edit, Merge PDF Files</title>
+    <meta name="description" content="Free online PDF tools with 50+ utilities to merge, split, compress, convert, edit and protect PDF files. All tools work directly in your browser with no installation.">
+    <meta name="keywords" content="PDF tools, merge PDF, split PDF, compress PDF, PDF converter, PDF editor, free PDF tools">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #2563eb;
+            --secondary: #f59e0b;
+            --accent: #10b981;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --light: #f8fafc;
+            --glass-bg: rgba(37, 99, 235, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            background-attachment: fixed;
+            background-size: cover;
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--secondary), #f97316);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 32px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+            font-size: 16px;
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            padding: 80px 0 60px;
+            gap: 40px;
+            position: relative;
+        }
+        
+        .hero-content {
+            flex: 1;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            background: linear-gradient(to right, var(--light), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+        
+        .hero-image {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-image img {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .category-tab {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .category-tab:hover, .category-tab.active {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Tools Section */
+        .tools-section {
+            padding: 40px 0 60px;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 36px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .tool-card {
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tool-card.new::after {
+            content: 'New';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        
+        .tool-card.popular::after {
+            content: 'Popular';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--secondary);
+            color: var(--darker);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .tool-icon {
+            font-size: 42px;
+            margin-bottom: 15px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: transform 0.3s ease;
+        }
+        
+        .tool-card:hover .tool-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+        
+        .tool-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--light);
+        }
+        
+        .tool-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+        
+        /* AdSense Container */
+        .ad-container {
+            width: 100%;
+            margin: 40px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90px;
+            overflow: hidden;
+        }
+        
+        .ad-container p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        /* Features Section */
+        .features-section {
+            padding: 60px 0;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            padding: 30px;
+            display: flex;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 36px;
+            color: var(--accent);
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: rotate(15deg) scale(1.2);
+        }
+        
+        .feature-content h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+        
+        .feature-content p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 60px 0 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://via.placeholder.com/1920x300/1e293b/f8fafc?text=PDFMasterPro') center/cover no-repeat;
+            opacity: 0.05;
+            z-index: -1;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 18px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50%;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        .footer-column:hover h3::after {
+            width: 100%;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-column li:hover {
+            transform: translateX(5px);
+        }
+        
+        .footer-column a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            display: block;
+            position: relative;
+            padding-left: 0;
+        }
+        
+        .footer-column a:hover {
+            color: var(--accent);
+            padding-left: 5px;
+        }
+        
+        /* New keyframe animation for footer links */
+        @keyframes linkBounce {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+        
+        .footer-column li:hover a {
+            animation: linkBounce 0.5s ease;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            color: var(--light);
+            font-size: 20px;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-links a:hover {
+            color: var(--secondary);
+            transform: translateY(-3px) scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+        
+        /* Floating CTA Button */
+        .floating-cta {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--secondary);
+            color: var(--darker);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            animation: bounce 2s infinite;
+        }
+        
+        .floating-cta:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-15px); }
+            60% { transform: translateY(-7px); }
+        }
+        
+        /* Tool Entry Animation */
+        .tool-card {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .hero p {
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .section-title {
+                font-size: 30px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+            
+            .tool-card {
+                padding: 20px;
+            }
+            
+            .category-tabs {
+                gap: 8px;
+            }
+            
+            .category-tab {
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <a href="/" class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <span>PDFMasterPro</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#tools">All Tools</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="animate__animated animate__fadeInDown">50+ Powerful PDF Tools For All Your Needs</h1>
+                <p class="animate__animated animate__fadeInDown animate__delay-1s">The most comprehensive collection of free PDF tools online. Convert, edit, compress, merge, split and protect PDF files without any watermarks or limitations.</p>
+                <div class="ad-container animate__animated animate__fadeIn animate__delay-2s">
+                    <!-- AdSense Placeholder -->
+                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_ADSENSE_ID"
+                    crossorigin="anonymous"></script>
+                    <!-- Homepage Leaderboard -->
+                    <ins class="adsbygoogle"
+                        style="display:block"
+                        data-ad-client="ca-pub-YOUR_ADSENSE_ID"
+                        data-ad-slot="1234567890"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+            <div class="hero-image animate__animated animate__fadeInRight">
+                <img src="https://via.placeholder.com/600x400/1e293b/f8fafc?text=PDF+Tools+Dashboard" alt="PDF Tools Interface">
+            </div>
+        </section>
+        
+        <!-- Main Tools Section -->
+        <section class="tools-section" id="tools">
+            <h2 class="section-title animate__animated animate__fadeIn">Explore Our PDF Tools</h2>
+            
+            <div class="category-tabs animate__animated animate__fadeIn animate__delay-1s">
+                <div class="category-tab active" data-category="all">All Tools</div>
+                <div class="category-tab" data-category="convert">Convert</div>
+                <div class="category-tab" data-category="edit">Edit</div>
+                <div class="category-tab" data-category="organize">Organize</div>
+                <div class="category-tab" data-category="security">Security</div>
+                <div class="category-tab" data-category="other">Other Tools</div>
+            </div>
+            
+            <div class="ad-container animate__animated animate__fadeIn animate__delay-2s">
+                <!-- AdSense Placeholder -->
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_ADSENSE_ID"
+                crossorigin="anonymous"></script>
+                <!-- Tools Section Ad -->
+                <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-YOUR_ADSENSE_ID"
+                    data-ad-slot="0987654321"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+            
+            <div class="tools-grid">
+                <!-- PDF Management (8 tools) -->
+                <div class="tool-card glass-card popular" data-category="organize" style="animation-delay: 0.1s">
+                    <div class="tool-icon"><i class="fas fa-object-group"></i></div>
+                    <h3>Merge PDF</h3>
+                    <p>Combine multiple PDFs into one document</p>
+                </div>
+                <div class="tool-card glass-card popular" data-category="organize" style="animation-delay: 0.2s">
+                    <div class="tool-icon"><i class="fas fa-cut"></i></div>
+                    <h3>Split PDF</h3>
+                    <p>Divide PDF into separate files by pages</p>
+                </div>
+                <div class="tool-card glass-card popular" data-category="organize" style="animation-delay: 0.3s">
+                    <div class="tool-icon"><i class="fas fa-compress-alt"></i></div>
+                    <h3>Compress PDF</h3>
+                    <p>Reduce PDF file size without quality loss</p>
+                </div>
+                <div class="tool-card glass-card" data-category="organize" style="animation-delay: 0.4s">
+                    <div class="tool-icon"><i class="fas fa-layer-group"></i></div>
+                    <h3>Organize PDF</h3>
+                    <p>Rearrange pages in any order</p>
+                </div>
+                <div class="tool-card glass-card" data-category="organize" style="animation-delay: 0.5s">
+                    <div class="tool-icon"><i class="fas fa-file-export"></i></div>
+                    <h3>Extract Pages</h3>
+                    <p>Select specific pages to extract</p>
+                </div>
+                <div class="tool-card glass-card" data-category="organize" style="animation-delay: 0.6s">
+                    <div class="tool-icon"><i class="fas fa-file-archive"></i></div>
+                    <h3>PDF Portfolio</h3>
+                    <p>Combine different files into one PDF</p>
+                </div>
+                <div class="tool-card glass-card" data-category="organize" style="animation-delay: 0.7s">
+                    <div class="tool-icon"><i class="fas fa-file-medical"></i></div>
+                    <h3>Repair PDF</h3>
+                    <p>Fix corrupted PDF files</p>
+                </div>
+                <div class="tool-card glass-card" data-category="organize" style="animation-delay: 0.8s">
+                    <div class="tool-icon"><i class="fas fa-file-prescription"></i></div>
+                    <h3>Optimize PDF</h3>
+                    <p>Improve PDF for web/mobile</p>
+                </div>
+
+                <!-- PDF Conversion (12 tools) -->
+                <div class="tool-card glass-card popular" data-category="convert" style="animation-delay: 0.1s">
+                    <div class="tool-icon"><i class="fas fa-file-word"></i></div>
+                    <h3>PDF to Word</h3>
+                    <p>Convert to editable DOCX format</p>
+                </div>
+                <div class="tool-card glass-card" data-category="convert" style="animation-delay: 0.2s">
+                    <div class="tool-icon"><i class="fas fa-file-excel"></i></div>
+                    <h3>PDF to Excel</h3>
+                    <p>Extract tables to XLSX</p>
+                </div>
+                <div class="tool-card glass-card" data-category="convert" style="animation-delay: 0.3s">
+                    <div class="tool-icon"><i class="fas fa-file-powerpoint"></i></div>
+                    <h3>PDF to PPT</h3>
+                    <p>Convert slides to PowerPoint</p>
+                </div>
+                <div class="tool-card glass-card" data-category="convert" style="animation-delay: 0.4s">
+                    <div class="tool-icon"><i class="fas fa-image"></i></div>
+                    <h3>PDF to JPG</h3>
+                    <p>Convert pages to images</p>
+                </div>
+                <div class="tool-card glass-card" data-category="convert" style="animation-delay: 0.5s">
+                    <div class="tool-icon"><i class="fas fa-file-alt"></i></div>
+                    <h3>Word to PDF</h3>
+                    <p>Convert DOC/DOCX to PDF</p>
+                </div>
+                <div class="tool-card glass-card" data-category="convert" style="animation-delay: 0.6s">
+                    <div class="tool-icon"><i class="fas fa-file-excel"></i></div>
+                    <h3>Excel to PDF</h3>
+                    <p>Convert XLS/XLSX to PDF</p>
+                </div>
+                <div class="tool-card glass-card" data-category="convert" style="animation-delay: 0.7s">
+                    <div class="tool-icon"><i class="fas fa-file-powerpoint"></i></div>
+                    <h3>PPT to PDF</h3>
+                    <p>Convert presentations to PDF</p>
+                </div>
+                <div class="tool-card glass-card" data-category="convert" style="animation-delay: 0.8s">
+                    <div class="tool-icon"><i class="fas fa-file-image"></i></div>
+                    <h3>JPG to PDF</h3>
+                    <p>Convert images to PDF</p>
+                </div>
+                <div class="tool-card glass-card" data-category="convert" style="animation-delay: 0.9s">
+                    <div class="tool-icon"><i class="fas fa-file-code"></i></div>
+                    <h3>PDF to HTML</h3>
+                    <p>Convert to web page format</p>
+                </div>
+                <div class="tool-card glass-card" data-category="convert" style="animation-delay: 1.0s">
+                    <div class="tool-icon"><i class="fas fa-file-contract"></i></div>
+                    <h3>PDF to TXT</h3>
+                    <p>Extract text content</p>
+                </div>
+                <div class="tool-card glass-card new" data-category="convert" style="animation-delay: 1.1s">
+                    <div class="tool-icon"><i class="fas fa-file-pdf"></i></div>
+                    <h3>PDF to PDF/A</h3>
+                    <p>Archival PDF conversion</p>
+                </div>
+                <div class="tool-card glass-card new" data-category="convert" style="animation-delay: 1.2s">
+                    <div class="tool-icon"><i class="fas fa-file-export"></i></div>
+                    <h3>PDF to EPUB</h3>
+                    <p>Convert to eBook format</p>
+                </div>
+
+                <!-- PDF Editing (10 tools) -->
+                <div class="tool-card glass-card popular" data-category="edit" style="animation-delay: 0.1s">
+                    <div class="tool-icon"><i class="fas fa-edit"></i></div>
+                    <h3>Edit PDF</h3>
+                    <p>Modify text and images</p>
+                </div>
+                <div class="tool-card glass-card" data-category="edit" style="animation-delay: 0.2s">
+                    <div class="tool-icon"><i class="fas fa-font"></i></div>
+                    <h3>Add Text</h3>
+                    <p>Insert new text elements</p>
+                </div>
+                <div class="tool-card glass-card" data-category="edit" style="animation-delay: 0.3s">
+                    <div class="tool-icon"><i class="fas fa-image"></i></div>
+                    <h3>Add Image</h3>
+                    <p>Insert new images</p>
+                </div>
+                <div class="tool-card glass-card" data-category="edit" style="animation-delay: 0.4s">
+                    <div class="tool-icon"><i class="fas fa-stamp"></i></div>
+                    <h3>Watermark</h3>
+                    <p>Add text/image watermarks</p>
+                </div>
+                <div class="tool-card glass-card" data-category="edit" style="animation-delay: 0.5s">
+                    <div class="tool-icon"><i class="fas fa-sync-alt"></i></div>
+                    <h3>Rotate PDF</h3>
+                    <p>Rotate pages 90/180/270°</p>
+                </div>
+                <div class="tool-card glass-card" data-category="edit" style="animation-delay: 0.6s">
+                    <div class="tool-icon"><i class="fas fa-sort-numeric-up"></i></div>
+                    <h3>Number Pages</h3>
+                    <p>Add page numbers</p>
+                </div>
+                <div class="tool-card glass-card" data-category="edit" style="animation-delay: 0.7s">
+                    <div class="tool-icon"><i class="fas fa-align-left"></i></div>
+                    <h3>Redact PDF</h3>
+                    <p>Permanently remove content</p>
+                </div>
+                <div class="tool-card glass-card new" data-category="edit" style="animation-delay: 0.8s">
+                    <div class="tool-icon"><i class="fas fa-highlighter"></i></div>
+                    <h3>Highlight</h3>
+                    <p>Add highlight annotations</p>
+                </div>
+                <div class="tool-card glass-card" data-category="edit" style="animation-delay: 0.9s">
+                    <div class="tool-icon"><i class="fas fa-comment"></i></div>
+                    <h3>Add Comments</h3>
+                    <p>Insert notes and comments</p>
+                </div>
+                <div class="tool-card glass-card" data-category="edit" style="animation-delay: 1.0s">
+                    <div class="tool-icon"><i class="fas fa-file-signature"></i></div>
+                    <h3>Draw Signature</h3>
+                    <p>Create and add signatures</p>
+                </div>
+
+                <!-- PDF Security (6 tools) -->
+                <div class="tool-card glass-card popular" data-category="security" style="animation-delay: 0.1s">
+                    <div class="tool-icon"><i class="fas fa-lock"></i></div>
+                    <h3>Protect PDF</h3>
+                    <p>Add password protection</p>
+                </div>
+                <div class="tool-card glass-card" data-category="security" style="animation-delay: 0.2s">
+                    <div class="tool-icon"><i class="fas fa-lock-open"></i></div>
+                    <h3>Unlock PDF</h3>
+                    <p>Remove password (if known)</p>
+                </div>
+                <div class="tool-card glass-card" data-category="security" style="animation-delay: 0.3s">
+                    <div class="tool-icon"><i class="fas fa-file-signature"></i></div>
+                    <h3>eSign PDF</h3>
+                    <p>Add digital signatures</p>
+                </div>
+                <div class="tool-card glass-card" data-category="security" style="animation-delay: 0.4s">
+                    <div class="tool-icon"><i class="fas fa-user-shield"></i></div>
+                    <h3>Set Permissions</h3>
+                    <p>Control printing/editing</p>
+                </div>
+                <div class="tool-card glass-card" data-category="security" style="animation-delay: 0.5s">
+                    <div class="tool-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Encrypt PDF</h3>
+                    <p>Advanced encryption options</p>
+                </div>
+                <div class="tool-card glass-card" data-category="security" style="animation-delay: 0.6s">
+                    <div class="tool-icon"><i class="fas fa-search"></i></div>
+                    <h3>Remove Metadata</h3>
+                    <p>Clean document information</p>
+                </div>
+
+                <!-- OCR & Specialized (8 tools) -->
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.1s">
+                    <div class="tool-icon"><i class="fas fa-eye"></i></div>
+                    <h3>OCR PDF</h3>
+                    <p>Make scanned PDFs searchable</p>
+                </div>
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.2s">
+                    <div class="tool-icon"><i class="fas fa-language"></i></div>
+                    <h3>Translate PDF</h3>
+                    <p>Convert to other languages</p>
+                </div>
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.3s">
+                    <div class="tool-icon"><i class="fas fa-file-audio"></i></div>
+                    <h3>PDF to Speech</h3>
+                    <p>Convert text to audio</p>
+                </div>
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.4s">
+                    <div class="tool-icon"><i class="fas fa-file-import"></i></div>
+                    <h3>Compare PDFs</h3>
+                    <p>Find differences between files</p>
+                </div>
+                <div class="tool-card glass-card new" data-category="other" style="animation-delay: 0.5s">
+                    <div class="tool-icon"><i class="fas fa-award"></i></div> <!-- Changed icon for Certificate Maker -->
+                    <h3>Certificate Maker</h3>
+                    <p>Design professional certificates</p>
+                </div>
+                <div class="tool-card glass-card new" data-category="other" style="animation-delay: 0.6s">
+                    <div class="tool-icon"><i class="fas fa-file-invoice"></i></div>
+                    <h3>PDF Forms</h3>
+                    <p>Create fillable forms</p>
+                </div>
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.7s">
+                    <div class="tool-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                    <h3>Invoice Generator</h3>
+                    <p>Create PDF invoices</p>
+                </div>
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.8s">
+                    <div class="tool-icon"><i class="fas fa-file-video"></i></div>
+                    <h3>PDF to Video</h3>
+                    <p>Convert slides to video</p>
+                </div>
+
+                <!-- Additional Tools (8 tools) -->
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.1s">
+                    <div class="tool-icon"><i class="fas fa-file-download"></i></div>
+                    <h3>PDF Downloader</h3>
+                    <p>Download from URLs</p>
+                </div>
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.2s">
+                    <div class="tool-icon"><i class="fas fa-file-upload"></i></div>
+                    <h3>PDF Uploader</h3>
+                    <p>Upload to cloud storage</p>
+                </div>
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.3s">
+                    <div class="tool-icon"><i class="fas fa-print"></i></div>
+                    <h3>Print PDF</h3>
+                    <p>Advanced printing options</p>
+                </div>
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.4s">
+                    <div class="tool-icon"><i class="fas fa-search"></i></div>
+                    <h3>Search PDF</h3>
+                    <p>Find text across documents</p>
+                </div>
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.5s">
+                    <div class="tool-icon"><i class="fas fa-book"></i></div>
+                    <h3>PDF Bookmark</h3>
+                    <p>Add navigation bookmarks</p>
+                </div>
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.6s">
+                    <div class="tool-icon"><i class="fas fa-file-alt"></i></div>
+                    <h3>PDF Properties</h3>
+                    <p>Edit document information</p>
+                </div>
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.7s">
+                    <div class="tool-icon"><i class="fas fa-ruler-combined"></i></div>
+                    <h3>PDF Resize</h3>
+                    <p>Change page dimensions</p>
+                </div>
+                <div class="tool-card glass-card" data-category="other" style="animation-delay: 0.8s">
+                    <div class="tool-icon"><i class="fas fa-file-pdf"></i></div>
+                    <h3>PDF Creator</h3>
+                    <p>Generate PDF from scratch</p>
+                </div>
+            </div>
+            
+            <div class="ad-container">
+                <!-- AdSense Placeholder -->
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_ADSENSE_ID"
+                crossorigin="anonymous"></script>
+                <!-- Bottom Ad -->
+                <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-YOUR_ADSENSE_ID"
+                    data-ad-slot="5678901234"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </section>
+        
+        <!-- Features Section -->
+        <section class="features-section" id="features">
+            <div class="container">
+                <h2 class="section-title animate__animated animate__fadeIn">Why Choose Our PDF Tools?</h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card glass-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>Lightning Fast Processing</h3>
+                            <p>Our cloud-powered servers process your files in seconds, no matter how large they are.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card glass-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                        <div class="feature-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>Military-Grade Security</h3>
+                            <p>Your files are protected with 256-bit SSL encryption and automatically deleted after processing.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card glass-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                        <div class="feature-icon">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>Works on Any Device</h3>
+                            <p>Access all tools from your computer, tablet or smartphone. No installation required.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card glass-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s">
+                        <div class="feature-icon">
+                            <i class="fas fa-infinity"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>No Limits</h3>
+                            <p>No watermarks, no file size limits, no daily restrictions. Process as many files as you need.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card glass-card animate__animated animate__fadeInUp" style="animation-delay: 0.5s">
+                        <div class="feature-icon">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>Cloud Integration</h3>
+                            <p>Directly import files from Google Drive, Dropbox, or OneDrive and save results back to the cloud.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card glass-card animate__animated animate__fadeInUp" style="animation-delay: 0.6s">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>24/7 Support</h3>
+                            <p>Our support team is always ready to help you with any questions or issues.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="animate__animated animate__fadeInUp">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-column">
+                        <h3>PDF Tools</h3>
+                        <ul>
+                            <li><a href="#">All Tools</a></li>
+                            <li><a href="#">Popular Tools</a></li>
+                            <li><a href="#">New Tools</a></li>
+                            <li><a href="#">API Access</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">PDF Guides</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Company</h3>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Connect With Us</h3>
+                        <ul>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">YouTube</a></li>
+                        </ul>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="copyright">
+                    <p>&copy; 2023 PDFMasterPro. All rights reserved. | Serving over 1 million users monthly</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Floating CTA Button -->
+    <div class="floating-cta animate__animated animate__bounceInRight animate__delay-2s">
+        <i class="fas fa-file-upload"></i>
+    </div>
+
+    <script>
+        // Tool Category Filter
+        const categoryTabs = document.querySelectorAll('.category-tab');
+        const toolCards = document.querySelectorAll('.tool-card');
+        
+        categoryTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update active tab
+                categoryTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const category = tab.dataset.category;
+                
+                // Filter tools
+                toolCards.forEach(card => {
+                    if (category === 'all' || card.dataset.category === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Tool Card Click Handler
+        document.querySelectorAll('.tool-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const toolName = this.querySelector('h3').textContent;
+                // In a real implementation, this would redirect to the tool page
+                // window.location.href = `/tools/${toolName.toLowerCase().replace(' ', '-')}`;
+                
+                // For demo purposes:
+                console.log(`Opening tool: ${toolName}`);
+                alert(`You clicked on ${toolName}. This would normally open the tool interface.`);
+            });
+        });
+        
+        // Floating CTA Click Handler
+        document.querySelector('.floating-cta').addEventListener('click', function() {
+            alert('Upload your PDF files now!');
+            // In real implementation: document.getElementById('pdf-upload').click();
+        });
+        
+        // Scroll Animation
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.tool-card, .feature-card');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (elementPosition < screenPosition) {
+                    element.style.animation = `fadeInUp 0.5s forwards ${element.dataset.animationDelay || '0s'}`;
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', animateOnScroll);
+        document.addEventListener('DOMContentLoaded', animateOnScroll);
+        
+        // AdSense Implementation
+        function loadAdSense() {
+            // This would be handled by the AdSense script automatically
+            console.log('AdSense scripts loaded');
+        }
+        
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAdSense();
+        });
+    </script>
+</body>
+</html>
