@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Page Selector - Extract Pages from PDF | PDFMasterPro</title>
+    <meta name="description" content="Free online tool to select and extract pages from PDF files. Choose specific pages to download as individual PDFs or combined.">
+    <meta name="keywords" content="PDF page extractor, split PDF, extract PDF pages, PDF tool, PDF selector">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="PDF Page Selector - Extract Pages from PDF | PDFMasterPro">
+    <meta property="og:description" content="Select and extract pages from PDF files for free">
+    <link rel="canonical" href="https://pdfmasterpro.com/extract-pdf-pages">
+    
+    <!-- Required Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #2563eb;
+            --secondary: #f59e0b;
+            --accent: #10b981;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --light: #f8fafc;
+            --glass-bg: rgba(37, 99, 235, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --error: #ef4444;
+            --selected-blue: #3b82f6; /* More vibrant blue for selected pages */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            background-attachment: fixed;
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 0;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--secondary), #f97316);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 32px;
+        }
+        
+        .tool-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--light), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .tool-description {
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 18px;
+        }
+        
+        /* Main Card */
+        .main-card {
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        /* Upload Area */
+        .drop-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .drop-zone:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .upload-text {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+        
+        .upload-hint {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+        
+        /* File Info */
+        .file-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: var(--light);
+        }
+        
+        .file-size {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+        
+        /* Preview Section */
+        .preview-section {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .preview-title {
+            font-size: 20px;
+            color: var(--light);
+        }
+        
+        .page-count {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+        
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .page-preview {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+        
+        .page-preview:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary);
+        }
+        
+        .page-preview.selected {
+            border-color: var(--selected-blue);
+            background: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 2px var(--selected-blue);
+        }
+        
+        .page-number {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 1;
+        }
+        
+        .page-canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;
+        }
+        
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), #3b82f6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #1d4ed8, var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Processing Section */
+        .processing-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .processing-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        .processing-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 18px;
+        }
+        
+        /* Result Section */
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        .result-icon {
+            font-size: 48px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .result-message {
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: var(--light);
+        }
+        
+        .download-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .download-option {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .download-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+        
+        .download-btn {
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+        
+        /* Animations */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Scrollbar */
+        .preview-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .preview-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .preview-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-card {
+                padding: 25px;
+            }
+            
+            .drop-zone {
+                padding: 30px;
+            }
+            
+            .preview-container {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .tool-title {
+                font-size: 28px;
+            }
+            
+            .tool-description {
+                font-size: 16px;
+            }
+            
+            .main-card {
+                padding: 20px;
+            }
+            
+            .drop-zone {
+                padding: 25px 15px;
+            }
+            
+            .preview-container {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .download-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tool-title {
+                font-size: 24px;
+            }
+            
+            .preview-container {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 10px;
+            }
+            
+            .btn-group {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <span>PDFMasterPro</span>
+            </a>
+            <h1 class="tool-title animate__animated animate__fadeIn">PDF Page Selector</h1>
+            <p class="tool-description animate__animated animate__fadeIn">Select and extract pages from your PDF document</p>
+        </header>
+
+        <div class="main-card glass-card animate__animated animate__fadeIn">
+            <div class="drop-zone" id="dropZone">
+                <div class="upload-icon">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <h3 class="upload-text">Drag & Drop PDF File Here</h3>
+                <p class="upload-hint">or click to browse files</p>
+                <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="selectFileBtn">
+                        <i class="fas fa-folder-open"></i> Select PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="file-info" id="fileInfo" style="display: none;">
+                <div class="file-name" id="fileName"></div>
+                <div class="file-size" id="fileSize"></div>
+            </div>
+
+            <div class="preview-section" id="previewSection">
+                <div class="preview-header">
+                    <h3 class="preview-title">Select Pages</h3>
+                    <div class="page-count" id="pageCount"></div>
+                </div>
+                
+                <div class="preview-container" id="previewContainer"></div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" id="selectAllBtn">
+                        <i class="fas fa-check-square"></i> Select All
+                    </button>
+                    <button class="btn btn-secondary" id="clearSelectionBtn">
+                        <i class="fas fa-times-circle"></i> Clear All
+                    </button>
+                    <button class="btn btn-primary" id="extractBtn">
+                        <i class="fas fa-cut"></i> Extract Selected
+                    </button>
+                </div>
+            </div>
+
+            <div class="processing-container" id="processingContainer">
+                <div class="processing-spinner"></div>
+                <h3 class="processing-text">Processing your PDF...</h3>
+            </div>
+
+            <div class="result-container" id="resultContainer">
+                <div class="result-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="result-message">Your PDF pages are ready!</h3>
+                <div class="download-options" id="downloadOptions"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>PDFMasterPro &copy; 2023 | Free Online PDF Tools</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const selectFileBtn = document.getElementById('selectFileBtn');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const previewSection = document.getElementById('previewSection');
+            const previewContainer = document.getElementById('previewContainer');
+            const pageCount = document.getElementById('pageCount');
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            const clearSelectionBtn = document.getElementById('clearSelectionBtn');
+            const extractBtn = document.getElementById('extractBtn');
+            const processingContainer = document.getElementById('processingContainer');
+            const resultContainer = document.getElementById('resultContainer');
+            const downloadOptions = document.getElementById('downloadOptions');
+
+            let pdfFile = null;
+            let pdfDoc = null;
+            let selectedPages = new Set();
+
+            // Handle file selection via button
+            selectFileBtn.addEventListener('click', () => fileInput.click());
+            
+            // Handle file input change
+            fileInput.addEventListener('change', handleFile);
+
+            // Handle drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                dropZone.style.borderColor = 'var(--primary)';
+                dropZone.style.background = 'rgba(37, 99, 235, 0.15)';
+            }
+
+            function unhighlight() {
+                dropZone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                dropZone.style.background = 'var(--glass-bg)';
+            }
+
+            dropZone.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const droppedFiles = dt.files;
+                if (droppedFiles.length > 0) {
+                    handleFile({ target: { files: [droppedFiles[0]] } });
+                }
+            }
+
+            async function handleFile(e) {
+                const file = e.target.files[0];
+                
+                if (file.type !== 'application/pdf') {
+                    alert('Please select a PDF file.');
+                    return;
+                }
+                
+                pdfFile = file;
+                
+                // Show file info
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileInfo.style.display = 'block';
+                
+                // Load PDF for preview
+                processingContainer.style.display = 'block';
+                previewSection.style.display = 'none';
+                resultContainer.style.display = 'none';
+                
+                try {
+                    const arrayBuffer = await readFileAsArrayBuffer(file);
+                    pdfDoc = await pdfjsLib.getDocument(arrayBuffer).promise;
+                    
+                    // Show page count
+                    pageCount.textContent = `${pdfDoc.numPages} pages`;
+                    
+                    // Render page previews
+                    await renderPagePreviews(pdfDoc);
+                    
+                    previewSection.style.display = 'block';
+                    processingContainer.style.display = 'none';
+                    
+                } catch (error) {
+                    console.error('Error loading PDF:', error);
+                    processingContainer.style.display = 'none';
+                    alert('Error loading PDF. Please try again.');
+                }
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            async function renderPagePreviews(pdfDoc) {
+                previewContainer.innerHTML = '';
+                selectedPages.clear();
+                
+                // Render all pages (with limited resolution for performance)
+                for (let i = 1; i <= pdfDoc.numPages; i++) {
+                    const page = await pdfDoc.getPage(i);
+                    const viewport = page.getViewport({ scale: 0.5 });
+                    
+                    const pagePreview = document.createElement('div');
+                    pagePreview.className = 'page-preview';
+                    pagePreview.dataset.pageNumber = i;
+                    
+                    const pageNumber = document.createElement('div');
+                    pageNumber.className = 'page-number';
+                    pageNumber.textContent = i;
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.className = 'page-canvas';
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    pagePreview.appendChild(pageNumber);
+                    pagePreview.appendChild(canvas);
+                    previewContainer.appendChild(pagePreview);
+                    
+                    // Render page to canvas
+                    await page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    }).promise;
+                    
+                    // Add click handler for selection
+                    pagePreview.addEventListener('click', function() {
+                        const pageNum = parseInt(this.dataset.pageNumber);
+                        if (selectedPages.has(pageNum)) {
+                            selectedPages.delete(pageNum);
+                            this.classList.remove('selected');
+                        } else {
+                            selectedPages.add(pageNum);
+                            this.classList.add('selected');
+                        }
+                    });
+                }
+            }
+
+            // Select all pages
+            selectAllBtn.addEventListener('click', function() {
+                selectedPages = new Set();
+                const pagePreviews = document.querySelectorAll('.page-preview');
+                pagePreviews.forEach(preview => {
+                    const pageNum = parseInt(preview.dataset.pageNumber);
+                    selectedPages.add(pageNum);
+                    preview.classList.add('selected');
+                });
+            });
+
+            // Clear selection
+            clearSelectionBtn.addEventListener('click', function() {
+                selectedPages = new Set();
+                document.querySelectorAll('.page-preview').forEach(preview => {
+                    preview.classList.remove('selected');
+                });
+            });
+
+            // Extract selected pages
+            extractBtn.addEventListener('click', async function() {
+                if (selectedPages.size === 0) {
+                    alert('Please select at least one page to extract');
+                    return;
+                }
+                
+                // Convert Set to sorted array
+                const pagesToExtract = Array.from(selectedPages).sort((a, b) => a - b);
+                
+                // Show processing animation
+                processingContainer.style.display = 'block';
+                resultContainer.style.display = 'none';
+                
+                try {
+                    // Extract the pages
+                    const extractedPages = await extractPages(pdfFile, pagesToExtract);
+                    
+                    // Hide processing and show result
+                    processingContainer.style.display = 'none';
+                    resultContainer.style.display = 'block';
+                    
+                    // Render download options
+                    renderDownloadOptions(extractedPages, pagesToExtract);
+                    
+                } catch (error) {
+                    console.error('Error extracting pages:', error);
+                    processingContainer.style.display = 'none';
+                    alert('An error occurred while extracting pages. Please try again.');
+                }
+            });
+
+            async function extractPages(file, pages) {
+                const arrayBuffer = await readFileAsArrayBuffer(file);
+                const { PDFDocument } = PDFLib;
+                const originalPdf = await PDFDocument.load(arrayBuffer);
+                
+                const results = [];
+                
+                // Create individual PDFs for each selected page
+                for (const pageNum of pages) {
+                    const newPdf = await PDFDocument.create();
+                    const [copiedPage] = await newPdf.copyPages(originalPdf, [pageNum - 1]);
+                    newPdf.addPage(copiedPage);
+                    const pdfBytes = await newPdf.save();
+                    
+                    results.push({
+                        pageNumber: pageNum,
+                        blob: new Blob([pdfBytes], { type: 'application/pdf' })
+                    });
+                }
+                
+                // Also create a combined PDF of all selected pages
+                if (pages.length > 1) {
+                    const combinedPdf = await PDFDocument.create();
+                    for (const pageNum of pages) {
+                        const [copiedPage] = await combinedPdf.copyPages(originalPdf, [pageNum - 1]);
+                        combinedPdf.addPage(copiedPage);
+                    }
+                    const combinedBytes = await combinedPdf.save();
+                    
+                    results.push({
+                        pageNumber: 'combined',
+                        blob: new Blob([combinedBytes], { type: 'application/pdf' })
+                    });
+                }
+                
+                return results;
+            }
+
+            function renderDownloadOptions(results, pageNumbers) {
+                downloadOptions.innerHTML = '';
+                
+                // Find the combined PDF (if exists)
+                const combinedPdf = results.find(r => r.pageNumber === 'combined');
+                const individualPdfs = results.filter(r => r.pageNumber !== 'combined');
+                
+                if (combinedPdf) {
+                    // Add combined download option
+                    const combinedOption = document.createElement('div');
+                    combinedOption.className = 'download-option';
+                    combinedOption.innerHTML = `
+                        <div>All Selected Pages</div>
+                        <button class="btn btn-primary download-btn" id="downloadCombinedBtn">
+                            <i class="fas fa-download"></i> Download All
+                        </button>
+                    `;
+                    downloadOptions.appendChild(combinedOption);
+                    
+                    document.getElementById('downloadCombinedBtn').addEventListener('click', function() {
+                        saveAs(combinedPdf.blob, `selected_pages_${new Date().toISOString().split('T')[0]}.pdf`);
+                    });
+                }
+                
+                // Add download buttons for each page
+                individualPdfs.forEach(result => {
+                    const option = document.createElement('div');
+                    option.className = 'download-option';
+                    option.innerHTML = `
+                        <div>Page ${result.pageNumber}</div>
+                        <button class="btn btn-primary download-btn" data-page="${result.pageNumber}">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    `;
+                    downloadOptions.appendChild(option);
+                });
+                
+                // Add event listeners for page download buttons
+                document.querySelectorAll('.download-btn[data-page]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const pageNum = this.getAttribute('data-page');
+                        const result = individualPdfs.find(r => r.pageNumber == pageNum);
+                        if (result) {
+                            saveAs(result.blob, `page_${pageNum}.pdf`);
+                        }
+                    });
+                });
+            }
+
+            function readFileAsArrayBuffer(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsArrayBuffer(file);
+                });
+            }
+        });
+    </script>
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "PDF Page Selector - PDFMasterPro",
+        "description": "Free online tool to select and extract pages from PDF files",
+        "url": "https://pdfmasterpro.com/extract-pdf-pages",
+        "applicationCategory": "DocumentUtility",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "creator": {
+            "@type": "Organization",
+            "name": "PDFMasterPro"
+        }
+    }
+    </script>
+</body>
+</html>
