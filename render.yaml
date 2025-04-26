@@ -1,6 +1,9 @@
 services:
   - type: web
-    name: pdf-compress-tool
-    env: python
-    buildCommand: "./build.sh"
+    name: pdf-compressor
+    runtime: python
+    buildCommand: "./build.sh && pip install -r requirements.txt"
     startCommand: "gunicorn app:app"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.13
