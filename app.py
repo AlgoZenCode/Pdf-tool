@@ -1,7 +1,6 @@
 import os
 import subprocess
-from datetime import datetime
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, render_template
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -41,7 +40,7 @@ def compress_pdf(input_path, output_path, compression_level):
 
 @app.route('/')
 def index():
-    return app.send_static_file('index.html')
+    return render_template('index.html')
 
 @app.route('/compress', methods=['POST'])
 def compress():
@@ -56,7 +55,7 @@ def compress():
         return jsonify({'error': 'File must be a PDF'}), 400
     
     compression_level = request.form.get('compression_level', 'ebook')
-    if compression_level not in ['screen', 'ebook', 'printer', 'prepress', 'default']:
+    if compression_level not in ['screen', 'ebook', 'printer', 'prepress']:
         compression_level = 'ebook'
     
     # Save original file
@@ -92,16 +91,12 @@ def download(filename):
         as_attachment=True
     )
 
-@app.before_request
-def check_ghostscript_installed():
-    if request.path == '/' or request.path.startswith('/static'):
-        return
-    
-    if not check_ghostscript():
-        return jsonify({
-            'error': 'Ghostscript not installed',
-            'message': 'Please install Ghostscript to use this service'
-        }), 500
-
 if __name__ == '__main__':
+    if not check_ghostscript():
+        print("Error: Ghostscript is not installed. Please install it first.")
+        print("On Ubuntu/Debian: sudo apt-get install ghostscript")
+        print("On macOS: brew install ghostscript")
+        print("On Windows: Download from https://www.ghostscript.com/")
+        exit(1)
+    
     app.run(debug=True)
