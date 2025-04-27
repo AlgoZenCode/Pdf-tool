@@ -2,7 +2,7 @@ services:
   - type: web
     name: pdf-compressor
     runtime: python
-    buildCommand: "./build.sh && pip install -r requirements.txt"
+    buildCommand: "./build.sh"
     startCommand: "gunicorn app:app"
     envVars:
       - key: PYTHON_VERSION
