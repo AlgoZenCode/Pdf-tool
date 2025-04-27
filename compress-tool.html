@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Best Free PDF Compressor - Compress Large Files Fast</title>
-    <meta name="description" content="Compress PDF files with exact precision (1-98%) while maintaining quality">
+    <meta name="description" content="Compress PDF files with exact precision while maintaining quality">
     <meta name="keywords" content="PDF compressor, reduce PDF size, PDF optimizer, shrink PDF">
     <meta property="og:title" content="Best Free PDF Compressor - Compress Large Files Fast">
-    <meta property="og:description" content="Compress PDF files with exact precision (1-98%)">
+    <meta property="og:description" content="Compress PDF files with exact precision">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
@@ -204,108 +204,21 @@
             text-align: center;
         }
         
-        .slider-container {
+        select {
             width: 100%;
-        }
-        
-        .slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            border-radius: 4px;
+            padding: 10px;
+            border-radius: 6px;
             background: rgba(255, 255, 255, 0.1);
-            outline: none;
-        }
-        
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .slider::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
-        }
-        
-        .target-size-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .target-size-input {
-            flex: 1;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 8px 12px;
-            border-radius: 4px;
-        }
-        
-        .size-unit {
-            min-width: 50px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 8px;
-            border-radius: 4px;
-        }
-        
-        .preview-section {
-            display: none;
-            margin-top: 20px;
-        }
-        
-        .preview-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .preview-title {
-            font-size: 20px;
-            color: var(--light);
-        }
-        
-        .preview-container {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-        
-        .preview-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 20px;
-            min-width: 250px;
-            text-align: center;
-        }
-        
-        .preview-label {
-            color: rgba(255, 255, 255, 0.7);
             margin-bottom: 10px;
         }
         
-        .file-size-big {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .reduction {
-            font-size: 14px;
-            color: var(--success);
+        .error-message {
+            color: var(--error);
+            margin-top: 15px;
+            text-align: center;
+            display: none;
         }
         
         .btn-group {
@@ -418,15 +331,9 @@
             margin-bottom: 5px;
         }
         
-        .download-btn {
-            margin-top: 20px;
-        }
-        
-        .error-message {
-            color: var(--error);
-            margin-top: 15px;
-            text-align: center;
-            display: none;
+        .reduction {
+            font-size: 14px;
+            color: var(--success);
         }
         
         footer {
@@ -451,16 +358,6 @@
             }
         }
         
-        @media (max-width: 992px) {
-            .main-card {
-                padding: 25px;
-            }
-            
-            .drop-zone {
-                padding: 30px;
-            }
-        }
-        
         @media (max-width: 768px) {
             .tool-title {
                 font-size: 28px;
@@ -482,31 +379,6 @@
                 padding: 10px 15px;
                 font-size: 14px;
             }
-            
-            .preview-container {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .tool-title {
-                font-size: 24px;
-            }
-            
-            .btn-group {
-                gap: 10px;
-            }
-            
-            .target-size-control {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .target-size-input {
-                width: 100%;
-            }
         }
     </style>
 </head>
@@ -522,55 +394,57 @@
         </header>
 
         <div class="main-card glass-card animate__animated animate__fadeIn">
-            <div class="drop-zone" id="dropZone">
-                <div class="upload-icon">
-                    <i class="fas fa-file-pdf"></i>
-                </div>
-                <h3 class="upload-text">Drag & Drop PDF File Here</h3>
-                <p class="upload-hint">or click to browse files (Max 100MB)</p>
-                <input type="file" id="fileInput" accept=".pdf" style="display: none;">
-                <div class="btn-group">
-                    <button class="btn btn-primary" id="selectFileBtn">
-                        <i class="fas fa-folder-open"></i> Select PDF
-                    </button>
-                </div>
-            </div>
-
-            <div class="file-info" id="fileInfo" style="display: none;">
-                <div class="file-name" id="fileName"></div>
-                <div class="file-size" id="fileSize"></div>
-            </div>
-
-            <div class="options-section" id="optionsSection">
-                <div class="options-header">
-                    <h3 class="options-title">Compression Settings</h3>
-                </div>
-                
-                <div class="compression-controls">
-                    <div class="quality-control">
-                        <div class="quality-header">
-                            <span>Compression Level</span>
-                        </div>
-                        <select id="compressionLevel" class="target-size-input">
-                            <option value="screen">High Compression (Low Quality)</option>
-                            <option value="ebook" selected>Medium Compression</option>
-                            <option value="printer">Low Compression (High Quality)</option>
-                            <option value="prepress">Minimum Compression (Best Quality)</option>
-                        </select>
+            <form id="compressForm" enctype="multipart/form-data">
+                <div class="drop-zone" id="dropZone">
+                    <div class="upload-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3 class="upload-text">Drag & Drop PDF File Here</h3>
+                    <p class="upload-hint">or click to browse files (Max 100MB)</p>
+                    <input type="file" id="fileInput" name="file" accept=".pdf" style="display: none;">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" id="selectFileBtn">
+                            <i class="fas fa-folder-open"></i> Select PDF
+                        </button>
                     </div>
                 </div>
-                
-                <div class="error-message" id="errorMessage"></div>
-                
-                <div class="btn-group">
-                    <button class="btn btn-secondary" id="cancelBtn">
-                        <i class="fas fa-times"></i> Cancel
-                    </button>
-                    <button class="btn btn-primary" id="compressBtn">
-                        <i class="fas fa-compress-alt"></i> Compress PDF
-                    </button>
+
+                <div class="file-info" id="fileInfo" style="display: none;">
+                    <div class="file-name" id="fileName"></div>
+                    <div class="file-size" id="fileSize"></div>
                 </div>
-            </div>
+
+                <div class="options-section" id="optionsSection">
+                    <div class="options-header">
+                        <h3 class="options-title">Compression Settings</h3>
+                    </div>
+                    
+                    <div class="compression-controls">
+                        <div class="quality-control">
+                            <div class="quality-header">
+                                <span>Compression Level</span>
+                            </div>
+                            <select id="compressionLevel" name="compression_level" class="target-size-input">
+                                <option value="screen">High Compression (Low Quality)</option>
+                                <option value="ebook" selected>Medium Compression</option>
+                                <option value="printer">Low Compression (High Quality)</option>
+                                <option value="prepress">Minimum Compression (Best Quality)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="error-message" id="errorMessage"></div>
+                    
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="compressBtn">
+                            <i class="fas fa-compress-alt"></i> Compress PDF
+                        </button>
+                    </div>
+                </div>
+            </form>
 
             <div class="processing-container" id="processingContainer">
                 <div class="processing-spinner"></div>
@@ -597,7 +471,7 @@
                 </div>
                 
                 <div class="btn-group">
-                    <button class="btn btn-secondary" id="newFileBtn">
+                    <button type="button" class="btn btn-secondary" id="newFileBtn">
                         <i class="fas fa-file-upload"></i> New File
                     </button>
                     <a class="btn btn-primary" id="resultDownloadBtn" download>
@@ -608,7 +482,7 @@
         </div>
 
         <footer>
-            <p>PDFMasterPro &copy; 2023 | Free Online PDF Tools</p>
+            <p>PDFMasterPro &copy; 2025 | Free Online PDF Tools</p>
         </footer>
     </div>
 
@@ -632,7 +506,7 @@
             const newFileBtn = document.getElementById('newFileBtn');
             const resultDownloadBtn = document.getElementById('resultDownloadBtn');
             const errorMessage = document.getElementById('errorMessage');
-            const compressionLevel = document.getElementById('compressionLevel');
+            const compressForm = document.getElementById('compressForm');
 
             let pdfFile = null;
             let originalFileSize = 0;
@@ -675,7 +549,7 @@
                 const dt = e.dataTransfer;
                 const droppedFiles = dt.files;
                 if (droppedFiles.length > 0) {
-                    handleFile({ target: { files: [droppedFiles[0]] } });
+                    handleFile({ target: { files: [droppedFiles[0]] });
                 }
             }
 
@@ -716,8 +590,10 @@
                 return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
             }
 
-            // Compress button handler
-            compressBtn.addEventListener('click', async function() {
+            // Form submission
+            compressForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
                 if (!pdfFile) {
                     showError('Please select a PDF file first.');
                     return;
@@ -728,9 +604,7 @@
                 optionsSection.style.display = 'none';
                 hideError();
                 
-                const formData = new FormData();
-                formData.append('file', pdfFile);
-                formData.append('compression_level', compressionLevel.value);
+                const formData = new FormData(compressForm);
                 
                 try {
                     processingText.textContent = "Compressing PDF...";
