@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organize PDF - Reorder, Rotate & Delete Pages | PDFMasterPro</title>
+    <meta name="description" content="Free online tool to organize PDF pages. Reorder, rotate, delete pages and save your modified PDF.">
+    <meta name="keywords" content="organize PDF, reorder PDF pages, rotate PDF pages, delete PDF pages, PDF editor">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Organize PDF - Reorder, Rotate & Delete Pages | PDFMasterPro">
+    <meta property="og:description" content="Free online tool to organize PDF pages">
+    <link rel="canonical" href="https://pdfmasterpro.com/organize-pdf">
+    
+    <!-- Required Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #2563eb;
+            --secondary: #f59e0b;
+            --accent: #10b981;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --light: #f8fafc;
+            --glass-bg: rgba(37, 99, 235, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --error: #ef4444;
+            --selected-blue: #3b82f6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            background-attachment: fixed;
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+        
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 0;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--secondary), #f97316);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 32px;
+        }
+        
+        .tool-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--light), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .tool-description {
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 18px;
+        }
+        
+        /* Main Card */
+        .main-card {
+            padding: 30px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        /* Upload Area */
+        .drop-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .drop-zone:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .upload-text {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+        
+        .upload-hint {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+        
+        /* File Info */
+        .file-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: var(--light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-size {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+        
+        /* Preview Section */
+        .preview-section {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .preview-title {
+            font-size: 20px;
+            color: var(--light);
+        }
+        
+        .page-count {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+        
+        .preview-scroll-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 5px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            scroll-behavior: smooth;
+        }
+        
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            padding: 5px;
+        }
+        
+        .preview-container.vertical-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .preview-container.vertical-layout .page-preview {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .page-preview {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            position: relative;
+            user-select: none;
+            cursor: pointer;
+        }
+        
+        .page-preview:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary);
+        }
+        
+        .page-preview.selected {
+            border-color: var(--selected-blue);
+            background: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 2px var(--selected-blue);
+        }
+        
+        .page-preview.dragging {
+            opacity: 0.7;
+            transform: scale(1.02);
+            z-index: 100;
+        }
+        
+        .page-preview.placeholder {
+            border: 2px dashed var(--selected-blue);
+            background: transparent;
+        }
+        
+        .page-number {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 1;
+        }
+        
+        .page-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            z-index: 1;
+        }
+        
+        .page-action-btn {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .page-action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .page-action-btn.delete {
+            background: rgba(239, 68, 68, 0.9);
+        }
+        
+        .page-action-btn.rotate {
+            background: rgba(16, 185, 129, 0.9);
+        }
+        
+        .page-canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+        
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), #3b82f6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #1d4ed8, var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Processing Section */
+        .processing-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .processing-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        .processing-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 18px;
+        }
+        
+        /* Result Section */
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        .result-icon {
+            font-size: 48px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .result-message {
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: var(--light);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+        
+        /* Animations */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Scrollbar */
+        .preview-scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .preview-scroll-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .preview-scroll-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-card {
+                padding: 25px;
+            }
+            
+            .drop-zone {
+                padding: 30px;
+            }
+            
+            .preview-container {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .tool-title {
+                font-size: 28px;
+            }
+            
+            .tool-description {
+                font-size: 16px;
+            }
+            
+            .main-card {
+                padding: 20px;
+            }
+            
+            .drop-zone {
+                padding: 25px 15px;
+            }
+            
+            .preview-container {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tool-title {
+                font-size: 24px;
+            }
+            
+            .preview-container {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 10px;
+            }
+            
+            .btn-group {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <span>PDFMasterPro</span>
+            </a>
+            <h1 class="tool-title animate__animated animate__fadeIn">Organize PDF</h1>
+            <p class="tool-description animate__animated animate__fadeIn">Reorder, rotate and delete pages from your PDF document</p>
+        </header>
+
+        <div class="main-card glass-card animate__animated animate__fadeIn">
+            <div class="drop-zone" id="dropZone">
+                <div class="upload-icon">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <h3 class="upload-text">Drag & Drop PDF File Here</h3>
+                <p class="upload-hint">or click to browse files</p>
+                <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="selectFileBtn">
+                        <i class="fas fa-folder-open"></i> Select PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="file-info" id="fileInfo" style="display: none;">
+                <div class="file-name" id="fileName"></div>
+                <div class="file-size" id="fileSize"></div>
+            </div>
+
+            <div class="preview-section" id="previewSection">
+                <div class="preview-header">
+                    <h3 class="preview-title">Organize Pages</h3>
+                    <div class="page-count" id="pageCount"></div>
+                </div>
+                
+                <div class="preview-scroll-container" id="previewScrollContainer">
+                    <div class="preview-container" id="previewContainer"></div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" id="rotateAllBtn">
+                        <i class="fas fa-sync"></i> Rotate All
+                    </button>
+                    <button class="btn btn-secondary" id="layoutBtn">
+                        <i class="fas fa-th-list"></i> Vertical Layout
+                    </button>
+                    <button class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-undo"></i> Reset
+                    </button>
+                    <button class="btn btn-primary" id="saveBtn">
+                        <i class="fas fa-save"></i> Save PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="processing-container" id="processingContainer">
+                <div class="processing-spinner"></div>
+                <h3 class="processing-text">Processing your PDF...</h3>
+            </div>
+
+            <div class="result-container" id="resultContainer">
+                <div class="result-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="result-message">Your organized PDF is ready!</h3>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="downloadBtn">
+                        <i class="fas fa-download"></i> Download PDF
+                    </button>
+                    <button class="btn btn-secondary" id="newFileBtn">
+                        <i class="fas fa-file-upload"></i> New File
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>PDFMasterPro &copy; 2023 | Free Online PDF Tools</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const selectFileBtn = document.getElementById('selectFileBtn');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const previewSection = document.getElementById('previewSection');
+            const previewScrollContainer = document.getElementById('previewScrollContainer');
+            const previewContainer = document.getElementById('previewContainer');
+            const pageCount = document.getElementById('pageCount');
+            const rotateAllBtn = document.getElementById('rotateAllBtn');
+            const layoutBtn = document.getElementById('layoutBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const processingContainer = document.getElementById('processingContainer');
+            const resultContainer = document.getElementById('resultContainer');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const newFileBtn = document.getElementById('newFileBtn');
+
+            let pdfFile = null;
+            let pdfDoc = null;
+            let originalPdfBytes = null;
+            let modifiedPdfBytes = null;
+            let pageRotations = {};
+            let deletedPages = new Set();
+            let isVerticalLayout = false;
+            let selectedPage = null;
+            let draggedPage = null;
+            let draggedPageIndex = -1;
+            let dropIndex = -1;
+            let isDragging = false;
+            let dragStartX = 0;
+            let dragStartY = 0;
+            let scrollInterval = null;
+            let scrollSpeed = 0;
+            let scrollDirection = 0;
+            const scrollEdgeThreshold = 100;
+            const maxScrollSpeed = 40; // Increased scroll speed
+            const scrollAcceleration = 1.5; // Faster acceleration
+            const scrollDeceleration = 0.7;
+
+            // Handle file selection via button
+            selectFileBtn.addEventListener('click', () => fileInput.click());
+            
+            // Handle file input change
+            fileInput.addEventListener('change', handleFile);
+
+            // Handle drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                dropZone.style.borderColor = 'var(--primary)';
+                dropZone.style.background = 'rgba(37, 99, 235, 0.15)';
+            }
+
+            function unhighlight() {
+                dropZone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                dropZone.style.background = 'var(--glass-bg)';
+            }
+
+            dropZone.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const droppedFiles = dt.files;
+                if (droppedFiles.length > 0) {
+                    handleFile({ target: { files: [droppedFiles[0]] } });
+                }
+            }
+
+            async function handleFile(e) {
+                const file = e.target.files[0];
+                
+                if (file.type !== 'application/pdf') {
+                    alert('Please select a PDF file.');
+                    return;
+                }
+                
+                pdfFile = file;
+                
+                // Show file info
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileInfo.style.display = 'block';
+                
+                // Load PDF for preview
+                processingContainer.style.display = 'block';
+                previewSection.style.display = 'none';
+                resultContainer.style.display = 'none';
+                
+                try {
+                    const arrayBuffer = await readFileAsArrayBuffer(file);
+                    originalPdfBytes = arrayBuffer;
+                    pdfDoc = await pdfjsLib.getDocument(arrayBuffer).promise;
+                    
+                    // Initialize page rotations (0 degrees by default)
+                    pageRotations = {};
+                    for (let i = 1; i <= pdfDoc.numPages; i++) {
+                        pageRotations[i] = 0;
+                    }
+                    
+                    // Clear deleted pages and selections
+                    deletedPages = new Set();
+                    selectedPage = null;
+                    
+                    // Show page count
+                    pageCount.textContent = `${pdfDoc.numPages} pages`;
+                    
+                    // Render page previews
+                    await renderPagePreviews(pdfDoc);
+                    
+                    previewSection.style.display = 'block';
+                    processingContainer.style.display = 'none';
+                    
+                } catch (error) {
+                    console.error('Error loading PDF:', error);
+                    processingContainer.style.display = 'none';
+                    alert('Error loading PDF. Please try again.');
+                }
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            async function renderPagePreviews(pdfDoc) {
+                previewContainer.innerHTML = '';
+                
+                // Set layout class
+                previewContainer.classList.toggle('vertical-layout', isVerticalLayout);
+                
+                // Render all pages (with limited resolution for performance)
+                for (let i = 1; i <= pdfDoc.numPages; i++) {
+                    if (deletedPages.has(i)) continue;
+                    
+                    const page = await pdfDoc.getPage(i);
+                    const viewport = page.getViewport({ scale: isVerticalLayout ? 0.8 : 0.5, rotation: pageRotations[i] || 0 });
+                    
+                    const pagePreview = document.createElement('div');
+                    pagePreview.className = 'page-preview';
+                    pagePreview.dataset.pageNumber = i;
+                    
+                    if (selectedPage === i) {
+                        pagePreview.classList.add('selected');
+                    }
+                    
+                    // Add click event listener for selection
+                    pagePreview.addEventListener('click', handlePageClick);
+                    
+                    const pageNumber = document.createElement('div');
+                    pageNumber.className = 'page-number';
+                    pageNumber.textContent = i;
+                    
+                    const pageActions = document.createElement('div');
+                    pageActions.className = 'page-actions';
+                    
+                    const rotateBtn = document.createElement('button');
+                    rotateBtn.className = 'page-action-btn rotate';
+                    rotateBtn.innerHTML = '<i class="fas fa-redo"></i>';
+                    rotateBtn.title = 'Rotate 90°';
+                    rotateBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        rotatePage(i);
+                    });
+                    
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'page-action-btn delete';
+                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                    deleteBtn.title = 'Delete page';
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        deletePage(i, pagePreview);
+                    });
+                    
+                    pageActions.appendChild(rotateBtn);
+                    pageActions.appendChild(deleteBtn);
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.className = 'page-canvas';
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    pagePreview.appendChild(pageNumber);
+                    pagePreview.appendChild(pageActions);
+                    pagePreview.appendChild(canvas);
+                    previewContainer.appendChild(pagePreview);
+                    
+                    // Render page to canvas
+                    await page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    }).promise;
+                }
+            }
+
+            function handlePageClick(e) {
+                const pagePreview = e.target.closest('.page-preview');
+                if (!pagePreview) return;
+                
+                const pageNum = parseInt(pagePreview.dataset.pageNumber);
+                
+                // If already selected, unselect it
+                if (selectedPage === pageNum) {
+                    selectedPage = null;
+                    pagePreview.classList.remove('selected');
+                    
+                    // Remove drag event listeners
+                    pagePreview.removeEventListener('mousedown', startDrag);
+                    pagePreview.removeEventListener('touchstart', startTouchDrag);
+                    return;
+                }
+                
+                // Select the page
+                selectPage(pageNum);
+            }
+
+            function selectPage(pageNum) {
+                // Deselect previous selection
+                if (selectedPage !== null) {
+                    const prevSelected = document.querySelector(`.page-preview[data-page-number="${selectedPage}"]`);
+                    if (prevSelected) {
+                        prevSelected.classList.remove('selected');
+                        prevSelected.removeEventListener('mousedown', startDrag);
+                        prevSelected.removeEventListener('touchstart', startTouchDrag);
+                    }
+                }
+                
+                // Select new page
+                selectedPage = pageNum;
+                const newSelected = document.querySelector(`.page-preview[data-page-number="${pageNum}"]`);
+                if (newSelected) {
+                    newSelected.classList.add('selected');
+                    
+                    // Add drag event listeners to the selected page
+                    newSelected.addEventListener('mousedown', startDrag);
+                    newSelected.addEventListener('touchstart', startTouchDrag, { passive: false });
+                }
+            }
+
+            function startDrag(e) {
+                if (e.button !== 0 && e.type !== 'touchstart') return; // Only left mouse button or touch
+                
+                const pagePreview = e.target.closest('.page-preview');
+                if (!pagePreview) return;
+                
+                // Start drag
+                isDragging = true;
+                draggedPage = pagePreview;
+                draggedPageIndex = Array.from(previewContainer.children).indexOf(pagePreview);
+                dragStartX = e.clientX || e.touches[0].clientX;
+                dragStartY = e.clientY || e.touches[0].clientY;
+                
+                // Add dragging class
+                pagePreview.classList.add('dragging');
+                
+                // Add document-wide event listeners
+                document.addEventListener('mousemove', handleDragMove);
+                document.addEventListener('mouseup', endDrag);
+                document.addEventListener('touchmove', handleTouchDragMove, { passive: false });
+                document.addEventListener('touchend', endDrag);
+                
+                // Start auto-scroll check
+                startAutoScrollCheck();
+                
+                e.preventDefault();
+            }
+
+            function startTouchDrag(e) {
+                startDrag(e);
+            }
+
+            function startAutoScrollCheck() {
+                if (scrollInterval) clearInterval(scrollInterval);
+                
+                scrollInterval = setInterval(() => {
+                    if (!isDragging || !draggedPage) return;
+                    
+                    const scrollContainer = previewScrollContainer;
+                    const scrollRect = scrollContainer.getBoundingClientRect();
+                    const draggedRect = draggedPage.getBoundingClientRect();
+                    
+                    // Calculate distance from top/bottom edges
+                    const distanceFromTop = draggedRect.top - scrollRect.top;
+                    const distanceFromBottom = scrollRect.bottom - draggedRect.bottom;
+                    
+                    // Determine scroll direction and speed based on distance from edge
+                    if (distanceFromTop < scrollEdgeThreshold) {
+                        // Near top - scroll up
+                        scrollDirection = -1;
+                        // Calculate speed based on how close we are to the edge (closer = faster)
+                        const speedFactor = 1 - (distanceFromTop / scrollEdgeThreshold);
+                        scrollSpeed = maxScrollSpeed * speedFactor;
+                    } else if (distanceFromBottom < scrollEdgeThreshold) {
+                        // Near bottom - scroll down
+                        scrollDirection = 1;
+                        // Calculate speed based on how close we are to the edge (closer = faster)
+                        const speedFactor = 1 - (distanceFromBottom / scrollEdgeThreshold);
+                        scrollSpeed = maxScrollSpeed * speedFactor;
+                    } else {
+                        // Not near edge - stop scrolling
+                        scrollDirection = 0;
+                        scrollSpeed = 0;
+                    }
+                    
+                    // Apply scrolling if needed
+                    if (scrollSpeed > 0) {
+                        scrollContainer.scrollTop += scrollSpeed * scrollDirection;
+                    }
+                }, 16); // ~60fps
+            }
+
+            function handleDragMove(e) {
+                if (!isDragging) return;
+                
+                // Calculate movement
+                const clientX = e.clientX || e.touches[0].clientX;
+                const clientY = e.clientY || e.touches[0].clientY;
+                const dx = clientX - dragStartX;
+                const dy = clientY - dragStartY;
+                
+                // Update position for visual feedback
+                draggedPage.style.transform = `translate(${dx}px, ${dy}px)`;
+                
+                // Find drop position
+                const pagePreviews = Array.from(previewContainer.children);
+                
+                dropIndex = -1;
+                for (let i = 0; i < pagePreviews.length; i++) {
+                    const preview = pagePreviews[i];
+                    if (preview === draggedPage) continue;
+                    
+                    const rect = preview.getBoundingClientRect();
+                    const previewMiddle = rect.top + rect.height / 2;
+                    
+                    if (clientY < previewMiddle) {
+                        dropIndex = i;
+                        break;
+                    }
+                }
+                
+                if (dropIndex === -1) {
+                    dropIndex = pagePreviews.length;
+                }
+                
+                e.preventDefault();
+            }
+
+            function handleTouchDragMove(e) {
+                handleDragMove(e);
+            }
+
+            function endDrag(e) {
+                if (!isDragging) return;
+                
+                if (draggedPage) {
+                    // Remove dragging styles
+                    draggedPage.classList.remove('dragging');
+                    draggedPage.style.transform = '';
+                    
+                    // Reorder pages if needed
+                    if (dropIndex !== -1 && dropIndex !== draggedPageIndex) {
+                        // Remove from old position
+                        previewContainer.removeChild(draggedPage);
+                        
+                        // Insert at new position
+                        if (dropIndex >= previewContainer.children.length) {
+                            previewContainer.appendChild(draggedPage);
+                        } else {
+                            const adjustedDropIndex = dropIndex > draggedPageIndex ? dropIndex - 1 : dropIndex;
+                            previewContainer.insertBefore(draggedPage, previewContainer.children[adjustedDropIndex]);
+                        }
+                        
+                        // Update the selected page's position
+                        selectedPage = parseInt(draggedPage.dataset.pageNumber);
+                    }
+                }
+                
+                // Remove document-wide event listeners
+                document.removeEventListener('mousemove', handleDragMove);
+                document.removeEventListener('mouseup', endDrag);
+                document.removeEventListener('touchmove', handleTouchDragMove);
+                document.removeEventListener('touchend', endDrag);
+                
+                // Stop auto-scroll
+                if (scrollInterval) {
+                    clearInterval(scrollInterval);
+                    scrollInterval = null;
+                }
+                scrollSpeed = 0;
+                scrollDirection = 0;
+                
+                // Reset drag state
+                isDragging = false;
+                draggedPage = null;
+                draggedPageIndex = -1;
+                dropIndex = -1;
+            }
+
+            // Rotate all pages
+            rotateAllBtn.addEventListener('click', async function() {
+                if (!pdfDoc) return;
+                
+                processingContainer.style.display = 'block';
+                previewSection.style.display = 'none';
+                
+                try {
+                    // Rotate all pages 90 degrees
+                    for (let i = 1; i <= pdfDoc.numPages; i++) {
+                        if (!deletedPages.has(i)) {
+                            pageRotations[i] = (pageRotations[i] + 90) % 360;
+                        }
+                    }
+                    
+                    // Re-render previews
+                    await renderPagePreviews(pdfDoc);
+                    
+                    previewSection.style.display = 'block';
+                    processingContainer.style.display = 'none';
+                } catch (error) {
+                    console.error('Error rotating pages:', error);
+                    processingContainer.style.display = 'none';
+                    alert('Error rotating pages. Please try again.');
+                }
+            });
+
+            // Toggle between grid and vertical layouts
+            layoutBtn.addEventListener('click', async function() {
+                if (!pdfDoc) return;
+                
+                isVerticalLayout = !isVerticalLayout;
+                layoutBtn.innerHTML = isVerticalLayout 
+                    ? '<i class="fas fa-th-large"></i> Grid Layout' 
+                    : '<i class="fas fa-th-list"></i> Vertical Layout';
+                
+                processingContainer.style.display = 'block';
+                previewSection.style.display = 'none';
+                
+                try {
+                    await renderPagePreviews(pdfDoc);
+                    
+                    previewSection.style.display = 'block';
+                    processingContainer.style.display = 'none';
+                } catch (error) {
+                    console.error('Error changing layout:', error);
+                    processingContainer.style.display = 'none';
+                }
+            });
+
+            async function rotatePage(pageNum) {
+                // Update rotation angle (0, 90, 180, 270 degrees)
+                pageRotations[pageNum] = (pageRotations[pageNum] + 90) % 360;
+                
+                // Re-render the preview for this page
+                const page = await pdfDoc.getPage(pageNum);
+                const viewport = page.getViewport({ 
+                    scale: isVerticalLayout ? 0.8 : 0.5, 
+                    rotation: pageRotations[pageNum] 
+                });
+                
+                const pagePreview = document.querySelector(`.page-preview[data-page-number="${pageNum}"]`);
+                if (pagePreview) {
+                    const canvas = pagePreview.querySelector('.page-canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    await page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    }).promise;
+                }
+            }
+
+            function deletePage(pageNum, pageElement) {
+                if (confirm(`Are you sure you want to delete page ${pageNum}?`)) {
+                    deletedPages.add(pageNum);
+                    if (selectedPage === pageNum) {
+                        selectedPage = null;
+                    }
+                    pageElement.remove();
+                    
+                    // Update page count display
+                    const remainingPages = pdfDoc.numPages - deletedPages.size;
+                    pageCount.textContent = `${remainingPages} pages remaining`;
+                }
+            }
+
+            // Reset to original PDF
+            resetBtn.addEventListener('click', async function() {
+                if (!pdfDoc) return;
+                
+                processingContainer.style.display = 'block';
+                previewSection.style.display = 'none';
+                
+                try {
+                    // Reset rotations, deleted pages and selections
+                    pageRotations = {};
+                    for (let i = 1; i <= pdfDoc.numPages; i++) {
+                        pageRotations[i] = 0;
+                    }
+                    deletedPages = new Set();
+                    selectedPage = null;
+                    
+                    // Re-render previews
+                    await renderPagePreviews(pdfDoc);
+                    
+                    // Update page count
+                    pageCount.textContent = `${pdfDoc.numPages} pages`;
+                    
+                    previewSection.style.display = 'block';
+                    processingContainer.style.display = 'none';
+                    
+                } catch (error) {
+                    console.error('Error resetting PDF:', error);
+                    processingContainer.style.display = 'none';
+                    alert('Error resetting PDF. Please try again.');
+                }
+            });
+
+            // Save modified PDF
+            saveBtn.addEventListener('click', async function() {
+                if (!pdfDoc) return;
+                
+                processingContainer.style.display = 'block';
+                previewSection.style.display = 'none';
+                resultContainer.style.display = 'none';
+                
+                try {
+                    // Get the current page order from the DOM
+                    const pageElements = document.querySelectorAll('.page-preview');
+                    const pageOrder = Array.from(pageElements).map(el => parseInt(el.dataset.pageNumber));
+                    
+                    // Create the modified PDF
+                    modifiedPdfBytes = await createModifiedPdf(pageOrder);
+                    
+                    // Show result section
+                    processingContainer.style.display = 'none';
+                    resultContainer.style.display = 'block';
+                    
+                } catch (error) {
+                    console.error('Error saving PDF:', error);
+                    processingContainer.style.display = 'none';
+                    alert('An error occurred while saving the PDF. Please try again.');
+                }
+            });
+
+            async function createModifiedPdf(pageOrder) {
+                const { PDFDocument } = PDFLib;
+                const originalPdf = await PDFDocument.load(originalPdfBytes);
+                const newPdf = await PDFDocument.create();
+                
+                // Copy pages in the current order with their rotations
+                for (const pageNum of pageOrder) {
+                    const [copiedPage] = await newPdf.copyPages(originalPdf, [pageNum - 1]);
+                    newPdf.addPage(copiedPage);
+                    
+                    // Apply rotation if needed
+                    if (pageRotations[pageNum] && pageRotations[pageNum] !== 0) {
+                        const pageIndex = newPdf.getPageCount() - 1;
+                        newPdf.getPages()[pageIndex].setRotation(pageRotations[pageNum]);
+                    }
+                }
+                
+                return await newPdf.save();
+            }
+
+            // Download the modified PDF
+            downloadBtn.addEventListener('click', function() {
+                if (modifiedPdfBytes) {
+                    saveAs(new Blob([modifiedPdfBytes], { type: 'application/pdf' }), 
+                          `organized_${fileName.textContent}`);
+                }
+            });
+
+            // Start with a new file
+            newFileBtn.addEventListener('click', function() {
+                fileInfo.style.display = 'none';
+                previewSection.style.display = 'none';
+                resultContainer.style.display = 'none';
+                fileInput.value = '';
+                pdfFile = null;
+                pdfDoc = null;
+                originalPdfBytes = null;
+                modifiedPdfBytes = null;
+                pageRotations = {};
+                deletedPages = new Set();
+                selectedPage = null;
+                isVerticalLayout = false;
+                layoutBtn.innerHTML = '<i class="fas fa-th-list"></i> Vertical Layout';
+            });
+
+            function readFileAsArrayBuffer(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsArrayBuffer(file);
+                });
+            }
+        });
+    </script>
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Organize PDF - PDFMasterPro",
+        "description": "Free online tool to reorder, rotate and delete pages from PDF files",
+        "url": "https://pdfmasterpro.com/organize-pdf",
+        "applicationCategory": "DocumentUtility",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "creator": {
+            "@type": "Organization",
+            "name": "PDFMasterPro"
+        }
+    }
+    </script>
+</body>
+</html>
