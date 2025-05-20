@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove PDF Metadata | PDFMasterPro</title>
+    <meta name="description" content="Free online tool to remove metadata from PDF files. Clean sensitive information from your documents.">
+    <meta name="keywords" content="remove pdf metadata, clean pdf, pdf privacy tool, pdf editor">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Remove PDF Metadata | PDFMasterPro">
+    <meta property="og:description" content="Free online tool to remove metadata from PDF files">
+    <link rel="canonical" href="https://pdfmasterpro.com/remove-pdf-metadata">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #f59e0b;
+            --accent: #10b981;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --light: #f8fafc;
+            --glass-bg: rgba(37, 99, 235, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --error: #ef4444;
+            --selected-blue: #3b82f6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            background-attachment: fixed;
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 0;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--secondary), #f97316);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 32px;
+        }
+        
+        .tool-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--light), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .tool-description {
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 18px;
+        }
+        
+        .main-card {
+            padding: 30px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .drop-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .drop-zone:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+        
+        .drop-zone.active {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.15);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .upload-text {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+        
+        .upload-hint {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+        
+        .file-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: var(--light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-size {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+        
+        .settings-section {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .settings-title {
+            font-size: 20px;
+            color: var(--light);
+        }
+        
+        .page-count {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+        
+        .metadata-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .metadata-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .metadata-title i {
+            font-size: 18px;
+        }
+        
+        .metadata-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .metadata-table th, .metadata-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .metadata-table th {
+            color: var(--light);
+            font-weight: 500;
+        }
+        
+        .metadata-table td {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .metadata-empty {
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .checkbox-label {
+            margin-left: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), #3b82f6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #1d4ed8, var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .processing-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .processing-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        .processing-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 18px;
+        }
+        
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        .result-icon {
+            font-size: 48px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .result-message {
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: var(--light);
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .main-card {
+                padding: 25px;
+            }
+            
+            .drop-zone {
+                padding: 30px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .tool-title {
+                font-size: 28px;
+            }
+            
+            .tool-description {
+                font-size: 16px;
+            }
+            
+            .main-card {
+                padding: 20px;
+            }
+            
+            .drop-zone {
+                padding: 25px 15px;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tool-title {
+                font-size: 24px;
+            }
+            
+            .btn-group {
+                gap: 10px;
+            }
+            
+            .metadata-table th, .metadata-table td {
+                padding: 8px 5px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <span>PDFMasterPro</span>
+            </a>
+            <h1 class="tool-title animate__animated animate__fadeIn">Remove PDF Metadata</h1>
+            <p class="tool-description animate__animated animate__fadeIn">Clean sensitive information from your PDF documents</p>
+        </header>
+
+        <div class="main-card glass-card animate__animated animate__fadeIn">
+            <div class="drop-zone" id="dropZone">
+                <div class="upload-icon">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <h3 class="upload-text">Drag & Drop PDF File Here</h3>
+                <p class="upload-hint">or click to browse files</p>
+                <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="selectFileBtn">
+                        <i class="fas fa-folder-open"></i> Select PDF
+                    </button>
+                </div>
+                <div class="error-message" id="fileError"></div>
+            </div>
+
+            <div class="file-info" id="fileInfo" style="display: none;">
+                <div class="file-name" id="fileName"></div>
+                <div class="file-size" id="fileSize"></div>
+            </div>
+
+            <div class="settings-section" id="settingsSection">
+                <div class="settings-header">
+                    <h3 class="settings-title">Metadata Removal Settings</h3>
+                    <div class="page-count" id="pageCount"></div>
+                </div>
+                
+                <div class="metadata-container">
+                    <h4 class="metadata-title"><i class="fas fa-info-circle"></i> Current Metadata</h4>
+                    <div id="metadataContent">
+                        <div class="metadata-empty">No metadata found or file not loaded yet</div>
+                    </div>
+                </div>
+                
+                <div class="metadata-container">
+                    <h4 class="metadata-title"><i class="fas fa-cog"></i> Removal Options</h4>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="removeAllMetadata" checked>
+                        <label for="removeAllMetadata" class="checkbox-label">Remove all metadata (recommended)</label>
+                    </div>
+                    
+                    <div id="customOptions" style="margin-top: 15px; display: none;">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="removeTitle" checked>
+                            <label for="removeTitle" class="checkbox-label">Remove document title</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="removeAuthor" checked>
+                            <label for="removeAuthor" class="checkbox-label">Remove author name</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="removeSubject" checked>
+                            <label for="removeSubject" class="checkbox-label">Remove subject</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="removeKeywords" checked>
+                            <label for="removeKeywords" class="checkbox-label">Remove keywords</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="removeCreator" checked>
+                            <label for="removeCreator" class="checkbox-label">Remove creator software</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="removeProducer" checked>
+                            <label for="removeProducer" class="checkbox-label">Remove producer software</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="removeCreationDate" checked>
+                            <label for="removeCreationDate" class="checkbox-label">Remove creation date</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="removeModificationDate" checked>
+                            <label for="removeModificationDate" class="checkbox-label">Remove modification date</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="removeMetadataBtn">
+                        <i class="fas fa-trash-alt"></i> Remove Metadata
+                    </button>
+                </div>
+            </div>
+
+            <div class="processing-container" id="processingContainer">
+                <div class="processing-spinner"></div>
+                <h3 class="processing-text">Cleaning your PDF metadata...</h3>
+            </div>
+
+            <div class="result-container" id="resultContainer">
+                <div class="result-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="result-message">Your PDF metadata has been cleaned!</h3>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="downloadBtn">
+                        <i class="fas fa-download"></i> Download PDF
+                    </button>
+                    <button class="btn btn-secondary" id="newFileBtn">
+                        <i class="fas fa-file-upload"></i> New File
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>PDFMasterPro &copy; 2023 | Free Online PDF Tools</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const selectFileBtn = document.getElementById('selectFileBtn');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const settingsSection = document.getElementById('settingsSection');
+            const pageCount = document.getElementById('pageCount');
+            const removeMetadataBtn = document.getElementById('removeMetadataBtn');
+            const processingContainer = document.getElementById('processingContainer');
+            const resultContainer = document.getElementById('resultContainer');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const newFileBtn = document.getElementById('newFileBtn');
+            const metadataContent = document.getElementById('metadataContent');
+            const removeAllMetadata = document.getElementById('removeAllMetadata');
+            const customOptions = document.getElementById('customOptions');
+            const fileError = document.getElementById('fileError');
+
+            let pdfFile = null;
+            let pdfDoc = null;
+            let originalPdfBytes = null;
+            let cleanedPdfBytes = null;
+            let totalPages = 0;
+            let currentMetadata = {};
+
+            // Initialize the tool
+            initTool();
+
+            function initTool() {
+                // Set up event listeners
+                setupEventListeners();
+                
+                // Initialize form values
+                resetFormValues();
+            }
+
+            function setupEventListeners() {
+                // Handle file selection via button
+                selectFileBtn.addEventListener('click', () => fileInput.click());
+                
+                // Handle file input change
+                fileInput.addEventListener('change', handleFile);
+
+                // Handle drag and drop
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, preventDefaults, false);
+                });
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, highlight, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, unhighlight, false);
+                });
+
+                dropZone.addEventListener('drop', handleDrop, false);
+
+                // Toggle between remove all and custom options
+                removeAllMetadata.addEventListener('change', function() {
+                    customOptions.style.display = this.checked ? 'none' : 'block';
+                });
+
+                // Remove metadata button
+                removeMetadataBtn.addEventListener('click', async function() {
+                    if (!validateForm()) return;
+                    
+                    processingContainer.style.display = 'block';
+                    settingsSection.style.display = 'none';
+                    resultContainer.style.display = 'none';
+                    
+                    try {
+                        // Create the cleaned PDF
+                        cleanedPdfBytes = await removePdfMetadata();
+                        
+                        // Show result section with download ready
+                        processingContainer.style.display = 'none';
+                        resultContainer.style.display = 'block';
+                        
+                    } catch (error) {
+                        console.error('Error removing PDF metadata:', error);
+                        processingContainer.style.display = 'none';
+                        showError('Error processing PDF. Please try again with a different file.');
+                    }
+                });
+
+                // Download the cleaned PDF
+                downloadBtn.addEventListener('click', async function() {
+                    if (!cleanedPdfBytes) {
+                        try {
+                            // If cleanedPdfBytes doesn't exist, create it first
+                            cleanedPdfBytes = await removePdfMetadata();
+                        } catch (error) {
+                            showError('Error preparing PDF for download. Please try again.');
+                            return;
+                        }
+                    }
+                    
+                    try {
+                        // Create a Blob
+                        const blob = new Blob([cleanedPdfBytes], { type: 'application/pdf' });
+                        
+                        // Generate filename
+                        let filename = 'cleaned.pdf';
+                        if (fileName.textContent) {
+                            filename = fileName.textContent.replace(/\.pdf$/i, '') + '_cleaned.pdf';
+                        }
+                        
+                        // Save the file
+                        saveAs(blob, filename);
+                        
+                    } catch (error) {
+                        console.error('Error downloading PDF:', error);
+                        showError('Error downloading PDF. Please try again.');
+                    }
+                });
+
+                // Start with a new file
+                newFileBtn.addEventListener('click', resetTool);
+            }
+
+            function resetFormValues() {
+                // Set default values for all form fields
+                removeAllMetadata.checked = true;
+                customOptions.style.display = 'none';
+                
+                // Set all custom options to checked by default
+                document.querySelectorAll('#customOptions input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+            }
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            function highlight() {
+                dropZone.classList.add('active');
+            }
+
+            function unhighlight() {
+                dropZone.classList.remove('active');
+            }
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFile({ target: { files: files } });
+                }
+            }
+
+            async function handleFile(e) {
+                const file = e.target.files[0];
+                
+                if (!file) return;
+                
+                // Check if file is PDF
+                if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+                    showError('Please select a valid PDF file.', fileError);
+                    return;
+                }
+                
+                // Check file size (limit to 25MB)
+                if (file.size > 25 * 1024 * 1024) {
+                    showError('File size too large. Please select a PDF smaller than 25MB.', fileError);
+                    return;
+                }
+                
+                pdfFile = file;
+                
+                // Show file info
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileInfo.style.display = 'block';
+                hideError(fileError);
+                
+                // Load PDF for metadata extraction
+                processingContainer.style.display = 'block';
+                settingsSection.style.display = 'none';
+                resultContainer.style.display = 'none';
+                
+                try {
+                    const arrayBuffer = await readFileAsArrayBuffer(file);
+                    originalPdfBytes = new Uint8Array(arrayBuffer);
+                    
+                    // Load PDF document
+                    pdfDoc = await pdfjsLib.getDocument({ data: originalPdfBytes }).promise;
+                    totalPages = pdfDoc.numPages;
+                    
+                    // Show page count
+                    pageCount.textContent = `${totalPages} pages`;
+                    
+                    // Extract metadata
+                    currentMetadata = await extractPdfMetadata();
+                    displayMetadata(currentMetadata);
+                    
+                    // Show settings section
+                    settingsSection.style.display = 'block';
+                    processingContainer.style.display = 'none';
+                    
+                } catch (error) {
+                    console.error('Error loading PDF:', error);
+                    processingContainer.style.display = 'none';
+                    showError('Error loading PDF. Please try again with a different file.', fileError);
+                    resetTool();
+                }
+            }
+
+            async function extractPdfMetadata() {
+                try {
+                    const metadata = await pdfDoc.getMetadata();
+                    const metadataObj = {};
+                    
+                    // Standard PDF metadata
+                    if (metadata.info) {
+                        metadataObj.Title = metadata.info.Title || 'Not specified';
+                        metadataObj.Author = metadata.info.Author || 'Not specified';
+                        metadataObj.Subject = metadata.info.Subject || 'Not specified';
+                        metadataObj.Keywords = metadata.info.Keywords || 'Not specified';
+                        metadataObj.Creator = metadata.info.Creator || 'Not specified';
+                        metadataObj.Producer = metadata.info.Producer || 'Not specified';
+                        metadataObj.CreationDate = metadata.info.CreationDate ? 
+                            new Date(metadata.info.CreationDate).toLocaleString() : 'Not specified';
+                        metadataObj.ModDate = metadata.info.ModDate ? 
+                            new Date(metadata.info.ModDate).toLocaleString() : 'Not specified';
+                    }
+                    
+                    // XMP metadata if available
+                    if (metadata.metadata) {
+                        const xmpData = await metadata.metadata.getAll();
+                        for (const [key, value] of Object.entries(xmpData)) {
+                            if (!metadataObj[key]) {
+                                metadataObj[key] = value || 'Not specified';
+                            }
+                        }
+                    }
+                    
+                    return metadataObj;
+                    
+                } catch (error) {
+                    console.error('Error extracting metadata:', error);
+                    return { Error: 'Could not extract metadata' };
+                }
+            }
+
+            function displayMetadata(metadata) {
+                if (!metadata || Object.keys(metadata).length === 0) {
+                    metadataContent.innerHTML = '<div class="metadata-empty">No metadata found in this document</div>';
+                    return;
+                }
+                
+                let html = '<table class="metadata-table"><tbody>';
+                
+                for (const [key, value] of Object.entries(metadata)) {
+                    html += `
+                        <tr>
+                            <th>${key}</th>
+                            <td>${value}</td>
+                        </tr>
+                    `;
+                }
+                
+                html += '</tbody></table>';
+                metadataContent.innerHTML = html;
+            }
+
+            function validateForm() {
+                hideAllErrors();
+                
+                // Check if PDF is loaded
+                if (!pdfDoc) {
+                    showError('Please upload a PDF file first.', fileError);
+                    return false;
+                }
+                
+                return true;
+            }
+
+            async function removePdfMetadata() {
+                try {
+                    const { PDFDocument } = PDFLib;
+                    
+                    // Load the original PDF
+                    const pdfDoc = await PDFDocument.load(originalPdfBytes);
+                    
+                    // Get removal options
+                    const options = getRemovalOptions();
+                    
+                    // Remove standard metadata
+                    if (options.removeAll || options.removeTitle) pdfDoc.setTitle('');
+                    if (options.removeAll || options.removeAuthor) pdfDoc.setAuthor('');
+                    if (options.removeAll || options.removeSubject) pdfDoc.setSubject('');
+                    if (options.removeAll || options.removeKeywords) pdfDoc.setKeywords([]);
+                    if (options.removeAll || options.removeCreator) pdfDoc.setCreator('');
+                    if (options.removeAll || options.removeProducer) pdfDoc.setProducer('');
+                    
+                    // Remove creation and modification dates
+                    if (options.removeAll || options.removeCreationDate || options.removeModificationDate) {
+                        // PDF-lib doesn't provide direct methods to remove dates, so we need to modify the info dictionary
+                        const infoDict = pdfDoc.context.lookup(pdfDoc.context.trailerInfo.Info);
+                        
+                        if (infoDict) {
+                            if (options.removeAll || options.removeCreationDate) infoDict.delete(pdfDoc.context.obj('CreationDate'));
+                            if (options.removeAll || options.removeModificationDate) infoDict.delete(pdfDoc.context.obj('ModDate'));
+                        }
+                    }
+                    
+                    // Save the modified PDF
+                    const pdfBytes = await pdfDoc.save();
+                    return new Uint8Array(pdfBytes);
+                    
+                } catch (error) {
+                    console.error('Error removing PDF metadata:', error);
+                    throw error;
+                }
+            }
+
+            function getRemovalOptions() {
+                if (removeAllMetadata.checked) {
+                    return {
+                        removeAll: true
+                    };
+                }
+                
+                return {
+                    removeAll: false,
+                    removeTitle: document.getElementById('removeTitle').checked,
+                    removeAuthor: document.getElementById('removeAuthor').checked,
+                    removeSubject: document.getElementById('removeSubject').checked,
+                    removeKeywords: document.getElementById('removeKeywords').checked,
+                    removeCreator: document.getElementById('removeCreator').checked,
+                    removeProducer: document.getElementById('removeProducer').checked,
+                    removeCreationDate: document.getElementById('removeCreationDate').checked,
+                    removeModificationDate: document.getElementById('removeModificationDate').checked
+                };
+            }
+
+            function resetTool() {
+                fileInfo.style.display = 'none';
+                settingsSection.style.display = 'none';
+                resultContainer.style.display = 'none';
+                fileInput.value = '';
+                pdfFile = null;
+                pdfDoc = null;
+                originalPdfBytes = null;
+                cleanedPdfBytes = null;
+                totalPages = 0;
+                currentMetadata = {};
+                
+                metadataContent.innerHTML = '<div class="metadata-empty">No metadata found or file not loaded yet</div>';
+                
+                resetFormValues();
+                hideAllErrors();
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            function readFileAsArrayBuffer(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = () => reject(new Error('Failed to read file'));
+                    reader.readAsArrayBuffer(file);
+                });
+            }
+
+            function showError(message, element = null) {
+                if (element) {
+                    element.textContent = message;
+                    element.style.display = 'block';
+                } else {
+                    alert(message);
+                }
+            }
+
+            function hideError(element) {
+                if (element) {
+                    element.style.display = 'none';
+                }
+            }
+
+            function hideAllErrors() {
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.style.display = 'none';
+                });
+            }
+        });
+    </script>
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Remove PDF Metadata - PDFMasterPro",
+        "description": "Free online tool to remove metadata from PDF files",
+        "url": "https://pdfmasterpro.com/remove-pdf-metadata",
+        "applicationCategory": "DocumentUtility",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "creator": {
+            "@type": "Organization",
+            "name": "PDFMasterPro"
+        }
+    }
+    </script>
+</body>
+</html>
